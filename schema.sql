@@ -58,7 +58,8 @@ alter table public.memberships  enable row level security;
 alter table public.notes        enable row level security;
 
 create policy "members read their orgs" on public.organizations
-  for select to authenticated using (public.is_member(id));
+  for select to authenticated
+  using (public.is_member(id) or created_by = (select auth.uid()));
 create policy "users create orgs" on public.organizations
   for insert to authenticated with check (created_by = (select auth.uid()));
 
